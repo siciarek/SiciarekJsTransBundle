@@ -1,0 +1,8 @@
+services:
+
+    siciarek.jstrans.twig.extension:
+        class: Siciarek\JsTransBundle\Twig\Extension\SiciarekJsTransExtension
+        arguments: [ @twig.loader, @router, @ewz_text.text_helper, @service_container ]
+        tags:
+            -
+                name:   twig.extension
