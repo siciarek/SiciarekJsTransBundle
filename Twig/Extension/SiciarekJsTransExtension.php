@@ -17,16 +17,10 @@ use Symfony\Component\Yaml\Yaml;
 
 class SiciarekJsTransExtension extends \Twig_Extension
 {
-    protected $loader;
-    protected $generator;
-    protected $textHelper;
     protected $container;
 
-    public function __construct(FilesystemLoader $loader, UrlGeneratorInterface $generator, TextHelper $textHelper, Container $container)
+    public function __construct(Container $container)
     {
-        $this->loader     = $loader;
-        $this->generator  = $generator;
-        $this->textHelper = $textHelper;
         $this->container  = $container;
     }
 
@@ -54,7 +48,7 @@ class SiciarekJsTransExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'translations' => new \Twig_Function_Method($this, 'translations', array('needs_environment' => true, 'is_safe' => array('html'))),
+            'translations' => new \Twig_Function_Method($this, 'translations', array('is_safe' => array('html'))),
         );
     }
 
@@ -62,73 +56,19 @@ class SiciarekJsTransExtension extends \Twig_Extension
     /**
      * Custom methods
      */
-    public function translations(\Twig_Environment $twig)
+    public function translations()
     {
-        set_time_limit(0);
-
         $currlocale = $this->container->get('templating.globals')->getRequest()->getLocale();
+        $directory = $this->container->get('kernel')->getCacheDir() . DIRECTORY_SEPARATOR . 'translations';
+        $script = sprintf('%s%scatalogue.%s.php', $directory, DIRECTORY_SEPARATOR, $currlocale);
 
+        $this->container->get('translator')->trans(null);
 
-        $dirsOrder = array(
-            "src",
-            "app",
-            "vendor",
-        );
+        /**
+         * @var \Symfony\Component\Translation\MessageCatalogue $catalogue
+         */
+        $catalogue = require $script;
 
-        // <cache>
-
-        $directory = $this->container->get('kernel')->getCacheDir() . DIRECTORY_SEPARATOR . 'siciarek_js_trans';
-        $extension    = ".dat";
-        $cache = new \Doctrine\Common\Cache\FilesystemCache($directory, $extension);
-
-        if(!$cache->contains('siciarek_js_trans')) {
-
-            $project = $this->getContainer()->get('kernel')->getRootDir() . '/../';
-
-            $temp = array();
-            $finder = new Finder();
-
-            $finder->files()->in($project)->path("translations")->name('*.yml');
-
-            /**
-             * @var \Symfony\Component\Finder\SplFileInfo $file
-             */
-            foreach ($finder as $file) {
-                $path = preg_replace('|\\\\|', '/', $file->getRelativePath());
-                $t    = explode('/', $path);
-                $root = array_shift($t);
-
-                list($namespace, $locale, $ext) = explode('.', $file->getFilename());
-
-                $temp[$root][$path][$namespace][$locale] = Yaml::parse($file->getRealPath());
-            }
-
-            $cache->save('siciarek_js_trans', $temp);
-        }
-
-        $temp = $cache->fetch('siciarek_js_trans');
-
-        // </cache>
-
-        $dictionaries = array();
-
-        foreach ($dirsOrder as $root) {
-            foreach ($temp[$root] as $path => $data) {
-                foreach ($data as $namespace => $dat) {
-                    foreach ($dat as $loc => $trans) {
-                        if ($loc == $currlocale) {
-                            $dictionaries[$root][$namespace] = $trans;
-                        }
-                    }
-                }
-            }
-        }
-
-        return sprintf('<script>String.prototype.translations = %s;</script>', json_encode($dictionaries));
-    }
-
-    protected function getContainer()
-    {
-        return $this->container;
+        return sprintf('<script>String.prototype.locale = "%s"; String.prototype.translations = %s;</script>', $currlocale, json_encode($catalogue->all()));
     }
 }
