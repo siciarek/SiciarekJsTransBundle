@@ -1,12 +1,60 @@
+/go
+
+/bin
+
+/properties.cnf
+
+/web/.htaccess
+
+# VCS
+.git
+
+
+# Java errors:
+/hs_err_pid*.log
+
+# PHPStorm
+.idea
+.DS_Store
+
+# Eclipse
+.settings
+.buildpath
+.project
+
+/temp*
+/web/tmp
+
+composer.phar
+composer.lock
+
+web/config.php
+
+vendor
+
+*~
+composer.phar
+composer.lock
+
 # Bootstrap
 app/bootstrap*
 
 # Symfony directories
-vendor/*
+/vendor
 */logs/*
 */cache/*
-web/uploads/*
-web/bundles/*
+web/uploads*
+web/bundles
+web/js
+web/css
+web/images
+web/font
+web/fonts
+web/docs
+web/behat
+web/assetic
+web/info.php
+web/grafa
 
 # Configuration files
 app/config/parameters.ini
