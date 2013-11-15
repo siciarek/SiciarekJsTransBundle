@@ -85,7 +85,6 @@ if (typeof String.prototype.trans === 'undefined') {
             var chunk = temp[i].trim();
             rx = new RegExp('^((?:one:)|(?:more:)|(?:{[^}]+})|(?:(?:])(?:.*?)(?:])))(.*?)$', 'mg');
             var range = chunk.replace(rx, '$1');
-
             chunk = chunk.replace(rx, '$2');
 
             if (range === chunk) {
