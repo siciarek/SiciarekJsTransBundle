@@ -115,7 +115,7 @@ module("String.trans()", {
     }
 });
 
-test("basic test", function () {
+test("basic", function () {
     var tests = getTransBasic();
 
     while (tests.length) {
@@ -128,7 +128,7 @@ test("basic test", function () {
     }
 });
 
-test("default domain test", function () {
+test("default domain", function () {
     var tests = getDefaultDomain();
 
     while (tests.length) {
@@ -142,7 +142,7 @@ test("default domain test", function () {
     }
 });
 
-test("given domain test", function () {
+test("given domain", function () {
     var tests = getGivenDomain();
 
     while (tests.length) {
@@ -166,7 +166,7 @@ module("String.transchoice()", {
     }
 });
 
-test("not matching messages test", function () {
+test("not matching messages", function () {
     var tests = getNonMatchingMessages();
 
     while (tests.length) {
@@ -184,7 +184,7 @@ test("not matching messages test", function () {
     }
 });
 
-test("choose test", function () {
+test("choose", function () {
     var tests = getChooseTests();
 
     while (tests.length) {
