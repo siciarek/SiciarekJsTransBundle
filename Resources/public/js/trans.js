@@ -14,20 +14,20 @@ if (typeof String.prototype.trans === 'undefined') {
         domain = domain || null;
         locale = locale || this.locale;
 
-        if (null === domain) {
+        if (domain === null) {
             domain = 'messages';
         }
 
-        var phrase = this.toString();
+        var phrase = null;
 
         // Search for phrase match:
-        if (this.translations.hasOwnProperty(domain) && typeof this.translations[domain].hasOwnProperty(phrase)) {
-            phrase = this.translations[domain][phrase];
+        if (this.translations.hasOwnProperty(locale) && this.translations[locale].hasOwnProperty(domain) && this.translations[locale][domain].hasOwnProperty(this.toString())) {
+            phrase = this.translations[locale][domain][this.toString()];
         }
 
         // No translation found:
-        if (phrase === this.toString()) {
-            return this.toString();
+        if (phrase === null) {
+            phrase = this.toString();
         }
 
         // Optional partial arguments:
@@ -42,6 +42,10 @@ if (typeof String.prototype.trans === 'undefined') {
     };
 
     String.prototype.transchoice = function (count, arguments, domain, locale) {
+
+        var exception = 'Unable to choose a translation for "__PHRASE__" with locale "__LOCALE__". Double check that this translation has the correct plural options (e.g. "There is one apple|There are %count% apples").';
+        exception.replace(/__PHRASE__/, this.toString());
+        exception.replace(/__LOCALE__/, this.locale);
 
         count = count || 0;
         arguments = arguments || {};
@@ -70,13 +74,17 @@ if (typeof String.prototype.trans === 'undefined') {
             }
         }
 
+        var temp = mainphrase.split('|');
+
+        if (temp.length === 1) {
+            return mainphrase;
+        }
+
         var wordmap = {
             'none:': '{0}',
             'one:': '{1}',
             'more:': ']1,Inf]'
         };
-
-        var temp = mainphrase.split('|');
 
         var parts = {};
         var counter = 0;
@@ -141,8 +149,6 @@ if (typeof String.prototype.trans === 'undefined') {
                 }
             }
         }
-
-        console.log([this.toString(), mainphrase, count, phrase]);
 
         function parseLeftOperator(operator) {
             switch (operator) {

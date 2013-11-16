@@ -69,6 +69,6 @@ class SiciarekJsTransExtension extends \Twig_Extension
          */
         $catalogue = require $script;
 
-        return sprintf('<script>String.prototype.locale = "%s"; String.prototype.translations = %s;</script>', $currlocale, json_encode($catalogue->all()));
+        return sprintf('<script>String.prototype.locale = "%s"; String.prototype.translations = %s;</script>', $currlocale, json_encode(array($currlocale => $catalogue->all())));
     }
 }
