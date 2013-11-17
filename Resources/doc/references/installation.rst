@@ -32,12 +32,12 @@ Update your ``AppKernel.php`` file to enable SiciarekJsTransBundle:
             // ...
 
             // Add SiciarekJsTransBundle
-            new Sonata\AdminBundle\SiciarekJsTransBundle(),
+            new Siciarek\JsTransBundle\SiciarekJsTransBundle(),
             // ...
         );
     }
 
-Configuring SiciarekJsTransBundle dependencies
+Configuring *SiciarekJsTransBundle* dependencies
 ------------------------------------------------
 
 You will need to configure *SiciarekJsTransBundle's* dependencies by changing
