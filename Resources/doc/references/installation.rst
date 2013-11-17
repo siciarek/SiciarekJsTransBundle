@@ -32,7 +32,7 @@ Update your ``AppKernel.php`` file to enable SiciarekJsTransBundle:
             // ...
 
             // Add SiciarekJsTransBundle
-            new Sonata\AdminBundle\SiciarekJsTransBundle(),
+            new Siciarek\JsTransBundle\SiciarekJsTransBundle(),
             // ...
         );
     }
