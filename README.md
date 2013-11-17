@@ -5,13 +5,12 @@ Symfony2 javascript i18n support
 
 ## Installation
 
-https://github.com/siciarek/ad-rotator-bundle/blob/master/src/Siciarek/JsTransBundle/Resources/doc/references/installation.rst
+https://github.com/siciarek/SiciarekJsTransBundle/blob/master/Resources/doc/references/installation.rst
 
 
 ## Usage
 
-https://github.com/siciarek/ad-rotator-bundle/blob/master/src/Siciarek/JsTransBundle/Resources/doc/references/usage.rst
-
+https://github.com/siciarek/SiciarekJsTransBundle/blob/master/Resources/doc/references/usage.rst
 
 ## Development
 
