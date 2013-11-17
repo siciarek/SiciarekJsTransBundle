@@ -32,9 +32,10 @@ If you have specified for example in ``Resources\translations\messages.pl.yaml``
 
 Than you can do in your ``javascript`` code:
 
-Usage of ``trans()``:
 
 .. code-block:: javascript
+
+    // Sample usage of trans():
 
     var message = "Not Found";
 
@@ -59,15 +60,14 @@ Usage of ``trans()``:
 
     message = "messages.hello_user";
 
-    mesage.trans({'%user%': 'John Doe'});              // will return "Witaj, John Doe!"
+    mesage.trans({'%user%': 'John Doe'});               // will return "Witaj, John Doe!"
 
     "messages.hello_user".trans({'%user%': 'John Doe'}) // will return "Witaj, John Doe!"
 
 
-
-Usage of ``transchoice()``:
-
 .. code-block:: javascript
+
+    // Sample usage of transchoice():
 
     var message = '{0} There are no apples|{1} There is one apple|]1,Inf] There are %count% apples';
 
