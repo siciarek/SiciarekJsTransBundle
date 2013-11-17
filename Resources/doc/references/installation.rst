@@ -37,7 +37,7 @@ Update your ``AppKernel.php`` file to enable SiciarekJsTransBundle:
         );
     }
 
-Configuring SiciarekJsTransBundle dependencies
+Configuring *SiciarekJsTransBundle* dependencies
 ------------------------------------------------
 
 You will need to configure *SiciarekJsTransBundle's* dependencies by changing
