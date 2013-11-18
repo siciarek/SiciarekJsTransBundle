@@ -7,7 +7,7 @@ Just add in your layout (just before first ``javascript`` tag is recommended):
 
     {{ translations() }}
 
-If you want to use more locales than default one, you should give their names in table as an argument:
+If you want to use more locales than default one, you should call helper with array of its names:
 
 .. code-block:: jinja
 
