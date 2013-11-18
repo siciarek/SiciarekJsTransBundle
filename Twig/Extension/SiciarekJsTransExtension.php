@@ -56,19 +56,39 @@ class SiciarekJsTransExtension extends \Twig_Extension
     /**
      * Custom methods
      */
-    public function translations()
+    public function translations($locs = array())
     {
         $currlocale = $this->container->get('templating.globals')->getRequest()->getLocale();
         $directory = $this->container->get('kernel')->getCacheDir() . DIRECTORY_SEPARATOR . 'translations';
-        $script = sprintf('%s%scatalogue.%s.php', $directory, DIRECTORY_SEPARATOR, $currlocale);
 
-        $this->container->get('translator')->trans(null);
+        if(!in_array($currlocale, $locs)) {
+            $locs[] = $currlocale;
+        }
 
-        /**
-         * @var \Symfony\Component\Translation\MessageCatalogue $catalogue
-         */
-        $catalogue = require $script;
+        $catalogues = array();
 
-        return sprintf('<script src="http://cdnjs.cloudflare.com/ajax/libs/xregexp/2.0.0/xregexp-min.js"></script><script>String.prototype.locale = "%s"; String.prototype.translations = %s;</script>', $currlocale, json_encode(array($currlocale => $catalogue->all())));
+        foreach($locs as $loc) {
+            $this->container->get('translator')->trans(null, array(), null, $loc);
+        }
+
+        foreach($locs as $loc) {
+            $script = sprintf('%s%scatalogue.%s.php', $directory, DIRECTORY_SEPARATOR, $loc);
+
+            /**
+             * @var \Symfony\Component\Translation\MessageCatalogue $catalogue
+             */
+            $catalogue = require $script;
+            $catalogues[$loc] = $catalogue->all();
+        }
+
+        $json = json_encode($catalogues);
+
+        $output = array();
+        $output[] = '<script src="http://cdnjs.cloudflare.com/ajax/libs/xregexp/2.0.0/xregexp-min.js"></script>';
+        $output[] = sprintf('<script>String.prototype.locale = "%s";</script>', $currlocale);
+        $output[] = sprintf('<script>String.prototype.translations = %s;</script>', $json);
+        $output[] = '<script src="/bundles/siciarekjstrans/js/trans.js"></script>';
+
+        return implode("\n", $output);
     }
 }

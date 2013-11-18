@@ -2,7 +2,7 @@ String.prototype.locale = 'en';
 String.prototype.translations = {
     'fr': {
         'validators': {
-            'This value should be true.': 'Ta wartość powinna być prawdą.'
+            'This value should be true.': 'Cette valeur doit être vraie.'
         }
     },
     'pl': {
