@@ -113,7 +113,7 @@ And you do:
     message.trans({}, null, 'pl'); // will result in "raz dwa trzy"
 
 
-Sample usage of ``trans()``
+Sample usage of ``transchoice()``
 ===========================
 
 .. code-block:: javascript
