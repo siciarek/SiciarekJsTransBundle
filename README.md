@@ -1,6 +1,8 @@
 SiciarekJsTransBundle
 =====================
 
+[![Build Status](https://travis-ci.org/siciarek/SiciarekJsTransBundle.png?branch=master)](https://travis-ci.org/siciarek/SiciarekJsTransBundle)
+
 Symfony2 javascript i18n support
 
 ## Installation
