@@ -110,7 +110,8 @@
     // [4]: http://www.jshint.com/options/
 
     "maxerr"        : 100,      // Maximum errors before stopping.
-    "globals"        : {        // Extra globals.
+    "globals"        : {        // Globals.
+        "module": true,
         "XRegExp": true,
         "MessageSelector": true,
         "Interval": true,

@@ -1,8 +1,12 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+
+    'use strict';
+
+    var pkg = grunt.file.readJSON('package.json');
 
     // Project configuration.
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: pkg,
         concat: {
             dest: {
                 src: [
@@ -39,6 +43,7 @@ module.exports = function(grunt) {
                 jshintrc: '.jshintrc'
             },
             files: [
+                'Gruntfile.js',
                 'Resources/public/js/src/String.js',
                 'Resources/public/js/src/Interval.js',
                 'Resources/public/js/src/MessageSelector.js',
@@ -46,8 +51,8 @@ module.exports = function(grunt) {
                 '!Resources/public/js/dist/*.min.js'
             ]
         },
-        jsdoc : {
-            dist : {
+        jsdoc: {
+            dist: {
                 src: ['Resources/public/js/src/*.js', 'README.md'],
                 dest: 'Resources/public/js/doc'
             }
@@ -63,14 +68,12 @@ module.exports = function(grunt) {
         }
     });
 
-    // Load grunt plugins
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-compare-size');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-jsdoc');
+    // Load grunt plugins.
+    for (var plugin in pkg.devDependencies) {
+        if (plugin !== 'grunt' && pkg.devDependencies.hasOwnProperty(plugin)) {
+            grunt.loadNpmTasks(plugin);
+        }
+    }
 
     // Default task(s).
     grunt.registerTask('build', ['concat', 'uglify', 'compare_size']);
