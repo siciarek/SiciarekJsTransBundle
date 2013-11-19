@@ -1,8 +1,8 @@
 {
     "name": "siciarek/jstrans-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony SiciarekJsTransBundle",
-    "keywords": ["Js Translation", "i18n"],
+    "description": "Symfony2 javascript i18n support",
+    "keywords": ["symfony", "javascript", "translation", "i18n"],
     "homepage": "http://siciarek.pl",
     "license": "MIT",
     "authors": [

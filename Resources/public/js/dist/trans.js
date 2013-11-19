@@ -4,13 +4,13 @@
  * Implementation based on:
  * /vendor/symfony/symfony/src/Symfony/Bridge/Twig/Extension/TranslationExtension.php
  * /vendor/symfony/symfony/src/Symfony/Component/Translation/Translator.php
- * /vendor/symfony/symfony/src/Symfony/Component/Translation/MessageSelector.php
  */
 if (typeof String.prototype.trans === 'undefined') {
 
-    String.prototype.trans = function (arguments, domain, locale) {
+    String.prototype.trans = function (args, domain, locale) {
+        'use strict';
 
-        arguments = arguments || {};
+        args = args || {};
         domain = domain || null;
         locale = locale || this.locale;
 
@@ -32,11 +32,11 @@ if (typeof String.prototype.trans === 'undefined') {
             message = this.toString();
         }
 
-        // Optional partial arguments:
-        for (var key in arguments) {
-            if (arguments.hasOwnProperty(key)) {
+        // Optional partial args:
+        for (var key in args) {
+            if (args.hasOwnProperty(key)) {
                 rx = new RegExp(key, 'g');
-                message = message.replace(rx, arguments[key]);
+                message = message.replace(rx, args[key]);
             }
         }
 
@@ -44,6 +44,8 @@ if (typeof String.prototype.trans === 'undefined') {
     };
 
     String.prototype.transchoiceException = function () {
+        'use strict';
+
         var message = 'Unable to choose a translation for "__PHRASE__" with locale "__LOCALE__". Double check that this translation has the correct plural options (e.g. "There is one apple|There are %count% apples").';
         message = message.replace(/__PHRASE__/, this.toString());
         message = message.replace(/__LOCALE__/, this.locale);
@@ -51,11 +53,12 @@ if (typeof String.prototype.trans === 'undefined') {
         return message;
     };
 
-    String.prototype.transchoice = function (count, arguments, domain, locale) {
+    String.prototype.transchoice = function (count, args, domain, locale) {
+        'use strict';
 
         count = count || 0;
-        arguments = arguments || {};
-        arguments['%count%'] = count;
+        args = args || {};
+        args['%count%'] = count;
         domain = domain || null;
         locale = locale || this.locale;
 
@@ -63,120 +66,11 @@ if (typeof String.prototype.trans === 'undefined') {
             domain = 'messages';
         }
 
-        var message = this.trans(arguments, domain, locale);
+        var message = this.trans(args, domain, locale);
 
         return MessageSelector.choose(message, count, locale);
-    }
+    };
 }
-
-
-// /vendor/symfony/symfony/src/Symfony/Component/Translation/Interval.php
-
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-// namespace Symfony\Component\Translation;
-
-/**
- * Tests if a given number belongs to a given math interval.
- *
- * An interval can represent a finite set of numbers:
- *
- *  {1,2,3,4}
- *
- * An interval can represent numbers between two numbers:
- *
- *  [1, +Inf]
- *  ]-1,2[
- *
- * The left delimiter can be [ (inclusive) or ] (exclusive).
- * The right delimiter can be [ (exclusive) or ] (inclusive).
- * Beside numbers, you can use -Inf and +Inf for the infinite.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @see    http://en.wikipedia.org/wiki/Interval_%28mathematics%29#The_ISO_notation
- */
-Interval = {
-    /**
-     * Tests if the given number is in the math interval.
-     *
-     * @param {integer} $number   A number
-     * @param {string}  $interval An interval
-     *
-     * @return {Boolean}
-     *
-     * @throws {string}
-     */
-    test: function ($number, $interval) {
-        $interval = $interval.trim();
-
-        var $rx = new XRegExp(Interval.getIntervalRegexp(), 'x');
-        var $matches = XRegExp.exec($interval, $rx);
-
-        if ($matches === null) {
-            throw '"%s" is not a valid interval.'.replace(/%s/, $interval);
-        }
-
-        if ($matches[1]) {
-            var temp = $matches[2].split(',');
-            while (temp.length) {
-                var $n = temp.shift();
-                if ($number == $n) {
-                    return true;
-                }
-            }
-        } else {
-            var $leftNumber = this.convertNumber($matches['left']);
-            var $rightNumber = this.convertNumber($matches['right']);
-
-            return ('[' === $matches['left_delimiter'] ? $number >= $leftNumber : $number > $leftNumber)
-                && (']' === $matches['right_delimiter'] ? $number <= $rightNumber : $number < $rightNumber)
-                ;
-        }
-
-        return false;
-    },
-
-    /**
-     * Returns a Regexp that matches valid intervals.
-     *
-     * @return string A Regexp (without the delimiters)
-     */
-    getIntervalRegexp: function () {
-        return "                                               \
-        ({\\s*                                                 \
-            (\\-?\\d+(\\.\\d+)?[\\s*,\\s*\\-?\\d+(\\.\\d+)?]*) \
-        \\s*})                                                 \
-                                                               \
-            |                                                  \
-                                                               \
-        (?P<left_delimiter>[\\[\\]])                           \
-            \\s*                                               \
-            (?P<left>-Inf|\\-?\\d+(\\.\\d+)?)                  \
-            \\s*,\\s*                                          \
-            (?P<right>\\+?Inf|\\-?\\d+(\\.\\d+)?)              \
-            \\s*                                               \
-        (?P<right_delimiter>[\\[\\]])                          \
-";
-    },
-
-    convertNumber: function ($number) {
-        if ('-Inf' === $number) {
-            return Math.log(0);
-        } else if ('+Inf' === $number || 'Inf' === $number) {
-            return -Math.log(0);
-        }
-
-        return parseFloat($number);
-    }
-};
 
 
 // /vendor\symfony\symfony\src\Symfony\Component\Translation\PluralizationRules.php
@@ -211,7 +105,9 @@ PluralizationRules =
      * @return {number} The plural position
      */
     get: function ($number, $locale) {
-        if ("pt_BR" == $locale) {
+        'use strict';
+
+        if ("pt_BR" === $locale) {
 // temporary set a locale for brazilian
             $locale = "xbr";
         }
@@ -220,16 +116,16 @@ PluralizationRules =
             $locale = $locale.substr(0, -$locale.indexOf('_').length);
         }
 
-//        if (typeof this.$rules[$locale] !== 'undefined') {
-//            var temp = this.$rules[$locale];
-//            $return = temp($number);
-//
-//            if ($return.match(/^\d+$/) || $return < 0) {
-//                return 0;
-//            }
-//
-//            return $return;
-//        }
+        if (typeof this.$rules[$locale] !== 'undefined') {
+            var temp = this.$rules[$locale];
+            var $return = temp($number);
+
+            if ($return.match(/^\d+$/) || $return < 0) {
+                return 0;
+            }
+
+            return $return;
+        }
 
         /*
          * The plural rules are derived from code of the Zend Framework (2010-09-25),
@@ -252,7 +148,6 @@ PluralizationRules =
             case 'vi':
             case 'zh':
                 return 0;
-                break;
 
             case 'af':
             case 'az':
@@ -305,7 +200,7 @@ PluralizationRules =
             case 'tk':
             case 'ur':
             case 'zu':
-                return ($number == 1) ? 0 : 1;
+                return ($number === 1) ? 0 : 1;
 
             case 'am':
             case 'bh':
@@ -319,7 +214,7 @@ PluralizationRules =
             case 'xbr':
             case 'ti':
             case 'wa':
-                return (($number == 0) || ($number == 1)) ? 0 : 1;
+                return (($number === 0) || ($number === 1)) ? 0 : 1;
 
             case 'be':
             case 'bs':
@@ -327,41 +222,41 @@ PluralizationRules =
             case 'ru':
             case 'sr':
             case 'uk':
-                return (($number % 10 == 1) && ($number % 100 != 11)) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2);
+                return (($number % 10 === 1) && ($number % 100 !== 11)) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2);
 
             case 'cs':
             case 'sk':
-                return ($number == 1) ? 0 : ((($number >= 2) && ($number <= 4)) ? 1 : 2);
+                return ($number === 1) ? 0 : ((($number >= 2) && ($number <= 4)) ? 1 : 2);
 
             case 'ga':
-                return ($number == 1) ? 0 : (($number == 2) ? 1 : 2);
+                return ($number === 1) ? 0 : (($number === 2) ? 1 : 2);
 
             case 'lt':
-                return (($number % 10 == 1) && ($number % 100 != 11)) ? 0 : ((($number % 10 >= 2) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2);
+                return (($number % 10 === 1) && ($number % 100 !== 11)) ? 0 : ((($number % 10 >= 2) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2);
 
             case 'sl':
-                return ($number % 100 == 1) ? 0 : (($number % 100 == 2) ? 1 : ((($number % 100 == 3) || ($number % 100 == 4)) ? 2 : 3));
+                return ($number % 100 === 1) ? 0 : (($number % 100 === 2) ? 1 : ((($number % 100 === 3) || ($number % 100 === 4)) ? 2 : 3));
 
             case 'mk':
-                return ($number % 10 == 1) ? 0 : 1;
+                return ($number % 10 === 1) ? 0 : 1;
 
             case 'mt':
-                return ($number == 1) ? 0 : ((($number == 0) || (($number % 100 > 1) && ($number % 100 < 11))) ? 1 : ((($number % 100 > 10) && ($number % 100 < 20)) ? 2 : 3));
+                return ($number === 1) ? 0 : ((($number === 0) || (($number % 100 > 1) && ($number % 100 < 11))) ? 1 : ((($number % 100 > 10) && ($number % 100 < 20)) ? 2 : 3));
 
             case 'lv':
-                return ($number == 0) ? 0 : ((($number % 10 == 1) && ($number % 100 != 11)) ? 1 : 2);
+                return ($number === 0) ? 0 : ((($number % 10 === 1) && ($number % 100 !== 11)) ? 1 : 2);
 
             case 'pl':
-                return ($number == 1) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 12) || ($number % 100 > 14))) ? 1 : 2);
+                return ($number === 1) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 12) || ($number % 100 > 14))) ? 1 : 2);
 
             case 'cy':
-                return ($number == 1) ? 0 : (($number == 2) ? 1 : ((($number == 8) || ($number == 11)) ? 2 : 3));
+                return ($number === 1) ? 0 : (($number === 2) ? 1 : ((($number === 8) || ($number === 11)) ? 2 : 3));
 
             case 'ro':
-                return ($number == 1) ? 0 : ((($number == 0) || (($number % 100 > 0) && ($number % 100 < 20))) ? 1 : 2);
+                return ($number === 1) ? 0 : ((($number === 0) || (($number % 100 > 0) && ($number % 100 < 20))) ? 1 : 2);
 
             case 'ar':
-                return ($number == 0) ? 0 : (($number == 1) ? 1 : (($number == 2) ? 2 : ((($number >= 3) && ($number <= 10)) ? 3 : ((($number >= 11) && ($number <= 99)) ? 4 : 5))));
+                return ($number === 0) ? 0 : (($number === 1) ? 1 : (($number === 2) ? 2 : ((($number >= 3) && ($number <= 10)) ? 3 : ((($number >= 11) && ($number <= 99)) ? 4 : 5))));
 
             default:
                 return 0;
@@ -377,7 +272,9 @@ PluralizationRules =
      * @throws {string}
      */
     set: function ($rule, $locale) {
-        if ("pt_BR" == $locale) {
+        'use strict';
+
+        if ("pt_BR" === $locale) {
 // temporary set a locale for brazilian
             $locale = "xbr";
         }
@@ -386,7 +283,7 @@ PluralizationRules =
             $locale = $locale.substr(0, -$locale.indexOf('_').length);
         }
 
-        if (typeof $rule !== 'Object') {
+        if (typeof $rule !== 'function') {
             throw 'The given rule can not be called';
         }
 
@@ -396,6 +293,126 @@ PluralizationRules =
 // @codeCoverageIgnoreEnd
 };
 
+// /vendor/symfony/symfony/src/Symfony/Component/Translation/Interval.php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+// namespace Symfony\Component\Translation;
+
+/**
+ * Tests if a given number belongs to a given math interval.
+ *
+ * An interval can represent a finite set of numbers:
+ *
+ *  {1,2,3,4}
+ *
+ * An interval can represent numbers between two numbers:
+ *
+ *  [1, +Inf]
+ *  ]-1,2[
+ *
+ * The left delimiter can be [ (inclusive) or ] (exclusive).
+ * The right delimiter can be [ (exclusive) or ] (inclusive).
+ * Beside numbers, you can use -Inf and +Inf for the infinite.
+ *
+ * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @see    http://en.wikipedia.org/wiki/Interval_%28mathematics%29#The_ISO_notation
+ */
+Interval = {
+    /**
+     * Tests if the given number is in the math interval.
+     *
+     * @param {number} $number   A number
+     * @param {string}  $interval An interval
+     *
+     * @return {boolean}
+     *
+     * @throws {string}
+     */
+    test: function ($number, $interval) {
+        'use strict';
+
+        $interval = $interval.trim();
+
+        var $rx = new XRegExp(Interval.getIntervalRegexp(), 'x');
+        var $matches = XRegExp.exec($interval, $rx);
+
+        if ($matches === null) {
+            throw '"%s" is not a valid interval.'.replace(/%s/, $interval);
+        }
+
+        if ($matches[1]) {
+            var temp = $matches[2].split(',');
+            while (temp.length) {
+                var $n = temp.shift();
+                if ($number === parseInt($n)) {
+                    return true;
+                }
+            }
+        } else {
+            var $leftNumber = this.convertNumber($matches.left);
+            var $rightNumber = this.convertNumber($matches.right);
+
+            return ('[' === $matches.left_delimiter ? $number >= $leftNumber : $number > $leftNumber) && (']' === $matches.right_delimiter ? $number <= $rightNumber : $number < $rightNumber);
+        }
+
+        return false;
+    },
+
+    /**
+     * Returns a Regexp that matches valid intervals.
+     *
+     * @return string A Regexp (without the delimiters)
+     */
+    getIntervalRegexp: function () {
+        'use strict';
+
+        /* jshint multistr:true */
+        var $ret = "                                           \
+        ({\\s*                                                 \
+            (\\-?\\d+(\\.\\d+)?[\\s*,\\s*\\-?\\d+(\\.\\d+)?]*) \
+        \\s*})                                                 \
+                                                               \
+            |                                                  \
+                                                               \
+        (?P<left_delimiter>[\\[\\]])                           \
+            \\s*                                               \
+            (?P<left>-Inf|\\-?\\d+(\\.\\d+)?)                  \
+            \\s*,\\s*                                          \
+            (?P<right>\\+?Inf|\\-?\\d+(\\.\\d+)?)              \
+            \\s*                                               \
+        (?P<right_delimiter>[\\[\\]])                          ";
+
+        return $ret;
+        /* jshint multistr:false */
+    },
+
+    /**
+     * Converts string to number or Infinity
+     *
+     * @param {string} $number
+     * @returns {number|Infinity}
+     */
+    convertNumber: function ($number) {
+        'use strict';
+
+        if ('-Inf' === $number) {
+            return Math.log(0);
+        } else if ('+Inf' === $number || 'Inf' === $number) {
+            return -Math.log(0);
+        }
+
+        return parseFloat($number);
+    }
+};
 
 // /vendor/symfony/symfony/src/Symfony/Component/Translation/MessageSelector.php
 
@@ -449,11 +466,13 @@ MessageSelector =
      * @api
      */
     choose: function ($message, $number, $locale) {
-        $parts = $message.split('|');
-        $explicitRules = {};
-        $standardRules = [];
+        'use strict';
 
-        for (var $i = 0; $i < $parts.length; $i++) {
+        var $parts = $message.split('|');
+        var $explicitRules = {};
+        var $standardRules = [];
+
+        for (var $i = 0; $i < $parts.length; $i += 1) {
             var $part = $parts[$i];
             $part = $part.trim();
 
@@ -461,7 +480,7 @@ MessageSelector =
             var $matches = XRegExp.exec($part, $rx);
 
             if ($matches !== null) {
-                $explicitRules[$matches['interval']] = $matches['message'];
+                $explicitRules[$matches.interval] = $matches.message;
             } else {
                 $rx = new XRegExp('^\\w+\\:\\s*(.*?)$', 'x');
                 $matches = XRegExp.exec($part, $rx);
@@ -476,14 +495,16 @@ MessageSelector =
 
         // try to match an explicit rule, then fallback to the standard ones
         for (var $interval in $explicitRules) {
-            var $m = $explicitRules[$interval];
+            if ($explicitRules.hasOwnProperty($interval)) {
+                var $m = $explicitRules[$interval];
 
-            if (Interval.test($number, $interval)) {
-                return $m;
+                if (Interval.test($number, $interval)) {
+                    return $m;
+                }
             }
         }
 
-        $position = PluralizationRules.get($number, $locale);
+        var $position = PluralizationRules.get($number, $locale);
 
         if (typeof $standardRules[$position] === 'undefined') {
             // when there's exactly one rule given, and that rule is a standard

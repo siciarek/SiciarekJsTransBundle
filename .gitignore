@@ -1,6 +1,8 @@
 /Controller
 /Resources/views
 node_modules
+npm-debug.log
+.sizecache.json
 
 /go
 
