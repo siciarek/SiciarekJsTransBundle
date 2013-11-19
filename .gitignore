@@ -7,10 +7,7 @@ npm-debug.log
 /go
 
 /bin
-
-/properties.cnf
-
-/web/.htaccess
+/doc
 
 # VCS
 .git

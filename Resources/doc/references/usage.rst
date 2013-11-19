@@ -114,7 +114,7 @@ And you do:
 
 
 Sample usage of ``transchoice()``
-===========================
+=================================
 
 .. code-block:: javascript
 
