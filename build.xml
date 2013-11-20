@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 
-<project name="SiciarekJsTransBundle" basedir=".">
+<project name="jstransbundle" basedir=".">
 
     <property name="doc.source.dir" value="Resources/doc"/>
     <property name="doc.html.target.dir" value="doc"/>
