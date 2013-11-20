@@ -65,15 +65,23 @@ module.exports = function (grunt) {
                     spawn: false
                 }
             }
+        },
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js'
+            }
         }
     });
 
     // Load grunt plugins.
-    for (var plugin in pkg.devDependencies) {
-        if (plugin !== 'grunt' && pkg.devDependencies.hasOwnProperty(plugin)) {
-            grunt.loadNpmTasks(plugin);
-        }
-    }
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-compare-size');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-qunit');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-karma');
 
     // Default task(s).
     grunt.registerTask('build', ['concat', 'uglify', 'compare_size']);

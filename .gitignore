@@ -1,10 +1,14 @@
 /Controller
 /Resources/views
+/Resources/public/js/coverage
+
 node_modules
 npm-debug.log
 .sizecache.json
 
 /go
+/go.bat
+/env.bat
 
 /bin
 /doc
