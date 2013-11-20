@@ -12,7 +12,7 @@ Use composer to manage your dependencies and download *SiciarekJsTransBundle*:
 
 .. code-block:: bash
 
-    php composer.phar require siciarek/ad-rotator-bundle
+    php composer.phar require siciarek/jstrans-bundle
 
 You'll be asked to type in a version constraint. 'dev-master' will get you the latest
 version, compatible with the latest Symfony2 version.
