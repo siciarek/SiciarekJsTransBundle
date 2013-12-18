@@ -1,0 +1,42 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SiciarekJsTransBundle JavaScript Test</title>
+    <link rel="stylesheet"
+          href="../../../../node_modules/grunt-contrib-nodeunit/node_modules/nodeunit/share/nodeunit.css"/>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<h1 id="nodeunit-header">SiciarekJsTransBundle JavaScript Test</h1>
+
+
+<script src="../../../../node_modules/grunt-contrib-nodeunit/node_modules/nodeunit/examples/browser/nodeunit.js"></script>
+
+<script>
+    var module = {
+        exports: null
+    };
+</script>
+
+
+<script src="../qunit/mocks.js"></script>
+<script src="../qunit/data/trans.js"></script>
+<script src="../qunit/data/transchoice.js.js"></script>
+<script src="../dist/trans.js"></script>
+
+<script src="tests/trans.js"></script>
+<script src="tests/transchoice.js"></script>
+<script>
+    var tests = {
+        'trans': transTest,
+        'transchoice': transchoiceTest
+    };
+    nodeunit.run(tests);
+</script>
+</body>
+</html>

@@ -84,7 +84,7 @@ class SiciarekJsTransExtension extends \Twig_Extension
         $json = json_encode($catalogues);
 
         $output = array();
-        $output[] = '<script src="http://cdnjs.cloudflare.com/ajax/libs/xregexp/2.0.0/xregexp-min.js"></script>';
+        $output[] = '<script src="/bundles/siciarekjstrans/js/lib/xregexp-min.js"></script>';
         $output[] = sprintf('<script>String.prototype.locale = "%s";</script>', $currlocale);
         $output[] = sprintf('<script>String.prototype.translations = %s;</script>', $json);
         $output[] = '<script src="/bundles/siciarekjstrans/js/dist/trans.min.js"></script>';

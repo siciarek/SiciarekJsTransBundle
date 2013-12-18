@@ -20,7 +20,7 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
-                banner: '/*! <%= pkg.name %>: <%= pkg.description %> <%= grunt.template.today("yyyy-mm-dd hh:MM") %> */\n'
+                banner: '/*! <%= pkg.name %>: <%= pkg.description %> <%= grunt.template.today("yyyy-mm-dd hh:MM") %> *//n'
             },
             build: {
                 src: 'Resources/public/js/dist/trans.js',
@@ -70,6 +70,24 @@ module.exports = function (grunt) {
             unit: {
                 configFile: 'karma.conf.js'
             }
+        },
+        nodeunit: {
+            all: {
+                src: [
+                    'Resources/public/js/nodeunit/tests/*.js'
+                ]
+            }
+        },
+        shell: {
+            nutap: {
+                command: 'node ./node_modules/grunt-contrib-nodeunit/node_modules/nodeunit/bin/nodeunit --reporter tap Resources/public/js/nodeunit/tests/trans.js',
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    failOnError: false,
+                    warnOnError: true
+                }
+            }
         }
     });
 
@@ -82,6 +100,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.loadNpmTasks('grunt-shell');
 
     // Default task(s).
     grunt.registerTask('build', ['concat', 'uglify', 'compare_size']);

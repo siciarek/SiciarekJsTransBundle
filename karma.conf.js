@@ -49,6 +49,7 @@ module.exports = function (config) {
 
             ],
 
+            dataPath: '.',
 // use dots reporter, as travis terminal does not support escaping sequences
 // possible values: 'dots', 'progress', 'junit', 'teamcity'
 // CLI --reporters progress
@@ -93,10 +94,19 @@ module.exports = function (config) {
 //// - IE (only Windows)
 //// CLI --browsers Chrome,Firefox,Safari
             browsers: [
+//                'ChromeCanary'
+//                'Opera'
+//                'IE'
+//                'Chrome'
+//                'Safari'
+//                'Firefox'
+
                 'IE',
                 'Chrome',
+                'Safari',
                 'Firefox'
             ],
+
 
 // If browser does not capture in given timeout [ms], kill it
 // CLI --capture-timeout 5000

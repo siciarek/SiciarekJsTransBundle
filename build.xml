@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 
-<project name="jstransbundle" basedir=".">
+<project name="adrotator" basedir=".">
 
-    <property name="doc.source.dir" value="Resources/doc"/>
-    <property name="doc.html.target.dir" value="doc"/>
-    <property name="doc.pdf.target.dir" value="doc/pdf"/>
+    <loadproperties srcFile="properties.cnf"/>
 
-    <target name="doc" depends="doc-html, doc-pdf" description="Generowanie dokumentacji projektu w formatach HTML i PDF"/>
+    <property name="phpunit" value="bin/phpunit.bat"/>
+    <property name="composer.phar" value="../composer.phar"/>
+    <property name="doc.source.dir" value="src/Siciarek/AdRotatorBundle/Resources/doc"/>
+    <property name="doc.html.target.dir" value="web/docs"/>
+    <property name="doc.pdf.target.dir" value="web/docs/pdf"/>
+
+    <target name="doc" depends="doc-html, doc-pdf" description="Generowanie dokumentacji projektu"/>
 
     <target name="doc-html" description="Generowanie dokumentacji projektu w formacie HTML">
         <exec executable="sphinx-build">
@@ -23,6 +27,81 @@
         <delete verbose="true" includeemptydirs="true">
             <fileset dir="${doc.pdf.target.dir}" excludes="${ant.project.name}.pdf" includes="**/*"/>
         </delete>
+    </target>
+
+    <target name="build" depends="ccx, db, fx"/>
+
+    <target name="db">
+
+        <exec executable="${php}">
+            <arg line="app/console doctrine:database:drop --force"/>
+        </exec>
+
+        <exec executable="${php}">
+            <arg line="app/console doctrine:database:create"/>
+        </exec>
+
+        <exec executable="${php}">
+            <arg line="app/console doctrine:schema:update --force"/>
+        </exec>
+
+        <exec executable="${php}">
+            <arg line="app/console -vvv doctrine:schema:validate"/>
+        </exec>
+
+    </target>
+
+    <target name="dbxf" depends="db, fx"/>
+
+    <target name="fix" depends="fx"/>
+
+    <target name="ut">
+        <exec executable="${phpunit}">
+            <arg line="-c app/phpunit.xml.dist"/>
+        </exec>
+    </target>
+
+    <target name="fixtures">
+        <exec executable="${php}">
+            <arg line="app/console doctrine:fixtures:load --no-interaction"/>
+        </exec>
+    </target>
+
+    <target name="fx" depends="fixtures"/>
+    <target name="ax" depends="ccx, as"/>
+
+    <target name="as">
+        <exec executable="${php}">
+            <arg line="app/console assets:install web"/>
+        </exec>
+        <exec executable="${php}">
+            <arg line="app/console assetic:dump --env=prod --no-debug"/>
+        </exec>
+    </target>
+
+    <target name="ccx">
+        <delete verbose="true" includeemptydirs="true">
+            <fileset dir="app/cache" excludes=".gitkeep" includes="**/*"/>
+            <fileset dir="app/logs" excludes=".gitkeep" includes="**/*"/>
+        </delete>
+    </target>
+
+    <target name="cc">
+        <exec executable="${php}">
+            <arg line="app/console cache:clear --env=prod"/>
+        </exec>
+    </target>
+
+    <target name="ccd">
+        <exec executable="${php}">
+            <arg line="app/console cache:clear --env=dev"/>
+        </exec>
+    </target>
+
+    <target name="up">
+        <exec executable="${php}">
+            <arg line="${composer.phar} --no-interaction --verbose update"/>
+        </exec>
     </target>
 
 </project>
