@@ -57,12 +57,11 @@ class SiciarekJsTransExtension extends \Twig_Extension
      */
     public function translations($locs = array())
     {
+        $currlocale = $this->container->getParameter('locale');
         
         if (!$this->container->isScopeActive('request')) {
-              return '';
+            $currlocale = $this->container->get('request')->getLocale();
         }
-        
-        $currlocale = $this->container->get('request')->getLocale();
         
         $directory = $this->container->get('kernel')->getCacheDir() . DIRECTORY_SEPARATOR . 'translations';
 
