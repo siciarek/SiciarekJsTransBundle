@@ -2,7 +2,6 @@
 
 namespace Siciarek\JsTransBundle\Twig\Extension;
 
-use EWZ\Bundle\TextBundle\Templating\Helper\TextHelper;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Finder\Finder;
@@ -58,7 +57,13 @@ class SiciarekJsTransExtension extends \Twig_Extension
      */
     public function translations($locs = array())
     {
-        $currlocale = $this->container->get('templating.globals')->getRequest()->getLocale();
+        
+        if (!$this->container->isScopeActive('request')) {
+              return '';
+        }
+        
+        $currlocale = $this->container->get('request')->getLocale();
+        
         $directory = $this->container->get('kernel')->getCacheDir() . DIRECTORY_SEPARATOR . 'translations';
 
         if(!in_array($currlocale, $locs)) {
@@ -71,9 +76,14 @@ class SiciarekJsTransExtension extends \Twig_Extension
             $this->container->get('translator')->trans(null, array(), null, $loc);
         }
 
-        foreach($locs as $loc) {
-            $script = sprintf('%s%scatalogue.%s.php', $directory, DIRECTORY_SEPARATOR, $loc);
+        $finder = new Finder();
+        $files = $finder->files()->in($directory)->name('/\.php$/');
+        
+        foreach($files as $file) {
+            $script = $file->getRealPath();
 
+            $loc = preg_replace('/.*catalogue\.([^\.]+)\..*/', '$1', $script);
+            
             /**
              * @var \Symfony\Component\Translation\MessageCatalogue $catalogue
              */
