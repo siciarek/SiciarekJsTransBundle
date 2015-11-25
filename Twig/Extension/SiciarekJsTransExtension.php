@@ -38,7 +38,7 @@ class SiciarekJsTransExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -46,9 +46,9 @@ class SiciarekJsTransExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            'translations' => new \Twig_Function_Method($this, 'translations', array('is_safe' => array('html'))),
-        );
+        return [
+            new \Twig_SimpleFunction('translations', [$this, 'translations'], ['is_safe' => ['html']]),
+        ];
     }
 
 
