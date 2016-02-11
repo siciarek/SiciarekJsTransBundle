@@ -3,15 +3,7 @@
 namespace Siciarek\JsTransBundle\Twig\Extension;
 
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Templating\Helper\Helper;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class SiciarekJsTransExtension extends \Twig_Extension
 {
@@ -56,10 +48,11 @@ class SiciarekJsTransExtension extends \Twig_Extension
      */
     public function translations($locs = array())
     {
-        $currlocale = $this->container->getParameter('locale');
 
-        if (!$this->container->isScopeActive('request')) {
+        if ($this->container->has('request')) {
             $currlocale = $this->container->get('request')->getLocale();
+        } else {
+            $currlocale = $this->container->getParameter('locale');
         }
 
         $directory = $this->container->get('kernel')->getCacheDir() . DIRECTORY_SEPARATOR . 'translations';
@@ -91,13 +84,17 @@ class SiciarekJsTransExtension extends \Twig_Extension
 
         $json = json_encode($catalogues);
 
-        $output = array();
-        $output[] = sprintf('<script src="%s"></script>', $this->container->get('templating.helper.assets')
-                        ->getUrl('bundles/siciarekjstrans/js/lib/xregexp.min.js'));
-        $output[] = sprintf('<script>String.prototype.locale = "%s";</script>', $currlocale);
-        $output[] = sprintf('<script>String.prototype.translations = %s;</script>', $json);
-        $output[] = sprintf('<script src="%s"></script>', $this->container->get('templating.helper.assets')
-                        ->getUrl('bundles/siciarekjstrans/js/dist/trans.min.js'));
+        $output = [];
+
+        if ($this->container->has('request')) {
+
+            $output[] = sprintf('<script src="%s"></script>', $this->container->get('request')
+                            ->getUriForPath('bundles/siciarekjstrans/js/lib/xregexp.min.js'));
+            $output[] = sprintf('<script>String.prototype.locale = "%s";</script>', $currlocale);
+            $output[] = sprintf('<script>String.prototype.translations = %s;</script>', $json);
+            $output[] = sprintf('<script src="%s"></script>', $this->container->get('request')
+                            ->getUriForPath('bundles/siciarekjstrans/js/dist/trans.min.js'));
+        }
 
         return implode("\n", $output);
     }
