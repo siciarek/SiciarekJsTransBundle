@@ -2,7 +2,7 @@ services:
 
     siciarek.jstrans.twig.extension:
         class: Siciarek\JsTransBundle\Twig\Extension\SiciarekJsTransExtension
-        arguments: [ @service_container ]
+        arguments: [ "@service_container" ]
         tags:
             -
                 name:   twig.extension
