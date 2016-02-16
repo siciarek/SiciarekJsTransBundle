@@ -87,13 +87,12 @@ class SiciarekJsTransExtension extends \Twig_Extension
         $output = [];
 
         if ($this->container->has('request')) {
+            $req = $this->container->get('request');
 
-            $output[] = sprintf('<script src="%s"></script>', $this->container->get('request')
-                            ->getUriForPath('bundles/siciarekjstrans/js/lib/xregexp.min.js'));
+            $output[] = sprintf('<script src="%s"></script>', $req->getUriForPath('/bundles/siciarekjstrans/js/lib/xregexp.min.js'));
             $output[] = sprintf('<script>String.prototype.locale = "%s";</script>', $currlocale);
             $output[] = sprintf('<script>String.prototype.translations = %s;</script>', $json);
-            $output[] = sprintf('<script src="%s"></script>', $this->container->get('request')
-                            ->getUriForPath('bundles/siciarekjstrans/js/dist/trans.min.js'));
+            $output[] = sprintf('<script src="%s"></script>', $req->getUriForPath('/bundles/siciarekjstrans/js/dist/trans.min.js'));
         }
 
         return implode("\n", $output);
