@@ -5,13 +5,17 @@ Just add in your layout (just before first ``javascript`` tag is recommended):
 
 .. code-block:: jinja
 
-    {{ translations() }}
+    {{ translations(app.request.locale) }}
+    <script src="{{ asset('bundles/siciarekjstrans/js/lib/xregexp.min.js') }}"></script>
+    <script src="{{ asset('bundles/siciarekjstrans/js/dist/trans.min.js') }}"></script>
 
 If you want to use more locales than default one, you should call helper with array of its names:
 
 .. code-block:: jinja
 
-    {{ translations([ 'fr', 'en' ]) }}
+    {{ translations(app.request.locale, [ 'fr', 'en' ]) }}
+    <script src="{{ asset('bundles/siciarekjstrans/js/lib/xregexp.min.js') }}"></script>
+    <script src="{{ asset('bundles/siciarekjstrans/js/dist/trans.min.js') }}"></script>
 
 Now you have enabled two custom methods of javascript ``String`` object:
 
