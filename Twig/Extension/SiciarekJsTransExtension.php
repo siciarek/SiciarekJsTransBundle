@@ -46,15 +46,8 @@ class SiciarekJsTransExtension extends \Twig_Extension
     /**
      * Custom methods
      */
-    public function translations($locs = array())
+    public function translations($currlocale, $locs = array())
     {
-
-        if ($this->container->has('request')) {
-            $currlocale = $this->container->get('request')->getLocale();
-        } else {
-            $currlocale = $this->container->getParameter('locale');
-        }
-
         $directory = $this->container->get('kernel')->getCacheDir() . DIRECTORY_SEPARATOR . 'translations';
 
         if (!in_array($currlocale, $locs)) {
@@ -86,14 +79,8 @@ class SiciarekJsTransExtension extends \Twig_Extension
 
         $output = [];
 
-        if ($this->container->has('request')) {
-            $req = $this->container->get('request');
-
-            $output[] = sprintf('<script src="%s"></script>', $req->getUriForPath('/bundles/siciarekjstrans/js/lib/xregexp.min.js'));
-            $output[] = sprintf('<script>String.prototype.locale = "%s";</script>', $currlocale);
-            $output[] = sprintf('<script>String.prototype.translations = %s;</script>', $json);
-            $output[] = sprintf('<script src="%s"></script>', $req->getUriForPath('/bundles/siciarekjstrans/js/dist/trans.min.js'));
-        }
+        $output[] = sprintf('<script>String.prototype.locale = "%s";</script>', $currlocale);
+        $output[] = sprintf('<script>String.prototype.translations = %s;</script>', $json);
 
         return implode("\n", $output);
     }
