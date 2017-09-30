@@ -2,7 +2,10 @@ services:
 
     siciarek.jstrans.twig.extension:
         class: Siciarek\JsTransBundle\Twig\Extension\SiciarekJsTransExtension
-        arguments: [ "@service_container" ]
+        arguments:
+            - '@translator.default'
+            - '@twig'
+            - '%kernel.cache_dir%/translations'
         tags:
             -
                 name:   twig.extension
